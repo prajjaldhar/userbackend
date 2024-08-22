@@ -1,0 +1,3 @@
+# no backend nodemodules to be inserted
+/backend/node_modules/
+/backend/.env
