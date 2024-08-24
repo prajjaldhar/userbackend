@@ -2,27 +2,27 @@ const UserCollection = require("../../models/userModel");
 const mongoose = require("mongoose");
 const getUserController = async (req, res) => {
   try {
-    const { id, firstname, lastname, name } = req.params;
-    console.log(firstname);
+    const { id, firstname, lastname, username } = req.params;
+    console.log(username);
     let users;
     // && mongoose.Types.ObjectId(id)
     if (id) {
-      users = await UserCollection.find({ _id: id });
+      users = await UserCollection.find({ _id: id }).select("-password");
     } else if (firstname) {
       const searchfirstname = firstname.toLowerCase();
       users = await UserCollection.find({
         firstName: { $regex: new RegExp(searchfirstname, "i") },
-      });
+      }).select("-password");
     } else if (lastname) {
       const searchlastname = lastname.toLowerCase();
       users = await UserCollection.find({
         lastName: { $regex: new RegExp(searchlastname, "i") },
-      });
-    } else if (name) {
-      const searchname = name.toLowerCase();
+      }).select("-password");
+    } else if (username) {
+      const searchname = username.toLowerCase();
       users = await UserCollection.find({
-        name: { $regex: new RegExp(searchname, "i") },
-      });
+        username: { $regex: new RegExp(searchname, "i") },
+      }).select("-password");
     } else if (req.path.includes("/random")) {
       users = await UserCollection.aggregate([{ $sample: { size: 5 } }]);
     } else {
