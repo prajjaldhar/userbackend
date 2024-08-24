@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs/dist/bcrypt");
 const UserCollection = require("../../models/userModel");
 const mongoose = require("mongoose");
 const postUserController = async (req, res) => {
@@ -40,7 +41,7 @@ const postUserController = async (req, res) => {
 
     // Check if the id or useremail is already taken
     const existingUserById = await UserCollection.findOne({ id });
-    console.log(existingUserById);
+    console.log(`existsbyid: ${existingUserById}`);
     if (existingUserById) {
       return res.status(400).send({
         message: "User already exists",
@@ -48,18 +49,19 @@ const postUserController = async (req, res) => {
     }
 
     const existinguser = await UserCollection.find({ useremail });
-    console.log(existinguser);
+    console.log(`email already exits: ${existinguser}`);
     if (existinguser.length > 0) {
       return res.status(400).send({
         message: "User already exists",
       });
     }
-
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = await new UserCollection({
       id,
       username,
       useremail,
-      password,
+      password: hashedPassword,
       age,
       firstName,
       lastName,
@@ -71,7 +73,7 @@ const postUserController = async (req, res) => {
     }).save();
     res
       .status(201)
-      .json({ message: "User created successfully", data: newUser });
+      .json({ message: "User created successfully", success: true });
   } catch (error) {
     console.log(`user is not added error occured: ${error}`.bgRed.white);
     res.send({
