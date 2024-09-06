@@ -5,6 +5,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const authController = require("../helpers/authController");
 const loginController = require("../controllers/userController/loginController");
 const deleteUserController = require("../controllers/userController/deleteUserController");
+const updateUserController = require("../controllers/userController/updateUserController");
 const router = express.Router();
 router.get("/", getUserController);
 router.get("/id/:id", getUserController);
@@ -21,5 +22,6 @@ router.delete("/delete/id/:id", deleteUserController);
 router.delete("/delete/firstname/:firstname", deleteUserController);
 router.delete("/delete/lastname/:lastname", deleteUserController);
 router.delete("/delete/name/:username", deleteUserController);
+router.put("/update/id/:id", updateUserController);
 
 module.exports = router;
